@@ -8,6 +8,8 @@ pipeline {
     environment {
         DOCKER_REPO_SERVER = '844181426527.dkr.ecr.eu-west-2.amazonaws.com'
         DOCKER_REPO = "${DOCKER_REPO_SERVER}/java-maven-app"
+        AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key_id')
+        AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws_secret_access_key')
     }
     stages {
         stage('increment version') {
@@ -38,18 +40,14 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
                         sh 'echo $DOCKERHUB_PASS | docker login -u $DOCKERHUB_USER --password-stdin'
                     }
-                    withCredentials([usernamePassword(credentialsId: 'ecr-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]){
-                        sh "docker build -t ${DOCKER_REPO}:${IMAGE_NAME} ."
-                        sh 'echo $PASS | docker login -u $USER --password-stdin ${DOCKER_REPO_SERVER}'
-                        sh "docker push ${DOCKER_REPO}:${IMAGE_NAME}"
-                    }
+                    sh "docker build -t ${DOCKER_REPO}:${IMAGE_NAME} ."
+                    sh 'aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${DOCKER_REPO_SERVER}'
+                    sh "docker push ${DOCKER_REPO}:${IMAGE_NAME}"
                 }
             }
         }
         stage('deploy') {
             environment {
-                AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key_id')
-                AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws_secret_access_key')
                 APP_NAME = 'java-maven-app'
             }
             steps {
