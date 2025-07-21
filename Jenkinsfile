@@ -64,6 +64,8 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]){
                         sh "git remote set-url origin https://${USER}:${PASS}@github.com/glenleach/Complete-CICD-Pipeline-with-EKS-and-AWS-ECR"
                         sh 'git add .'
+                        sh 'git config --global user.email "ci-bot@example.com"'
+                        sh 'git config --global user.name "CI Bot"'
                         sh 'git commit -m "ci: version bump"'
                         sh 'git push origin HEAD:jenkins-jobs'
                     }
