@@ -52,8 +52,6 @@ pipeline {
             }
             steps {
                 script {
-                   echo 'setting kubectl context...'
-                   sh 'kubectl config use-context Glen@java-maven-app-eks.eu-west-2.eksctl.io'
                    echo 'deploying docker image...'
                    sh 'envsubst < kubernetes/deployment.yaml | kubectl apply -f -'
                    sh 'envsubst < kubernetes/service.yaml | kubectl apply -f -'
