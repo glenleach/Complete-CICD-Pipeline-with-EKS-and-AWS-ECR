@@ -61,7 +61,7 @@ pipeline {
         stage('commit version update'){
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]){
+                    withCredentials([usernamePassword(credentialsId: 'github-PAT-Token', passwordVariable: 'PASS', usernameVariable: 'USER')]){
                         sh "git remote set-url origin https://${USER}:${PASS}@github.com/glenleach/Complete-CICD-Pipeline-with-EKS-and-AWS-ECR"
                         sh 'git add .'
                         sh 'git config --global user.email "ci-bot@example.com"'
