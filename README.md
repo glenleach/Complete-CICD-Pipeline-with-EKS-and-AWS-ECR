@@ -240,5 +240,52 @@ This command will remove the EKS cluster and all associated resources defined in
 - The `kubernetes/deployment.yaml` manifest defines how the application is deployed in the EKS cluster, referencing the Docker image in ECR.
 - The `kubernetes/service.yaml` manifest exposes the application within the cluster.
 
+## Creating a kubeconfig File for Jenkins (EKS)
+
+To allow Jenkins to deploy to your EKS cluster, you need a valid kubeconfig file in the Jenkins container. You can use the provided `config.yaml` template and follow these steps:
+
+### 1. Extract Required Values from AWS EKS
+
+- **Cluster Name:**
+  - The name you gave your EKS cluster (e.g., `java-maven-app-eks`).
+  - List clusters: `aws eks list-clusters --region <your-region>`
+
+- **Endpoint URL and Certificate Data:**
+  - Run: `aws eks describe-cluster --name <cluster-name> --region <region>`
+  - In the output, find:
+    - `endpoint`: Use as `<endpoint-url>`
+    - `certificateAuthority.data`: Use as `<certificate-data>` (base64 string)
+
+### 2. Fill in the Template
+
+- Open `config.yaml` and replace:
+  - `<certificate-data>` with the value from AWS
+  - `<endpoint-url>` with the value from AWS
+  - `<cluster-name>` with your EKS cluster name
+
+### 3. Copy the File into the Jenkins Container
+
+- If your Jenkins container is named `jenkins`, copy the file:
+  ```sh
+  docker cp config.yaml jenkins:/var/jenkins_home/.kube/config
+  ```
+  (Create the `.kube` directory first if it doesn't exist.)
+
+### 4. Set Permissions and Ownership
+
+- Enter the Jenkins container as root:
+  ```sh
+  docker exec -it jenkins bash
+  ```
+- Run:
+  ```sh
+  mkdir -p /var/jenkins_home/.kube
+  mv /path/to/config.yaml /var/jenkins_home/.kube/config
+  chown jenkins:jenkins /var/jenkins_home/.kube/config
+  chmod 600 /var/jenkins_home/.kube/config
+  ```
+
+After this, Jenkins will be able to authenticate to your EKS cluster using the kubeconfig file.
+
 ## Summary
 This setup ensures that every code change is automatically built, containerized, stored in a secure image repository, and deployed to a scalable Kubernetes environment on AWS, following best practices for modern DevOps and cloud-native applications.
