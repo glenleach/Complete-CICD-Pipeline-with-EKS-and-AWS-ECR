@@ -67,7 +67,7 @@ pipeline {
                         sh 'git config --global user.email "ci-bot@example.com"'
                         sh 'git config --global user.name "CI Bot"'
                         sh 'git commit -m "ci: version bump"'
-                        sh 'git push origin HEAD:jenkins-jobs'
+                        sh 'git push origin HEAD:refs/heads/jenkins-jobs'
                     }
                 }
             }
