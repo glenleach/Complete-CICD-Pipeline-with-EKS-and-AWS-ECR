@@ -110,6 +110,18 @@ docker exec -it <jenkins-container-name-or-id> /bin/sh
 ```
 This allows you to run commands, install tools, and troubleshoot directly inside the Jenkins container.
 
+### Installing aws-iam-authenticator in the Jenkins Container
+To enable EKS authentication, you must install `aws-iam-authenticator` in your Jenkins container:
+
+```sh
+curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.18.9/2020-11-02/bin/linux/amd64/aws-iam-authenticator
+chmod +x aws-iam-authenticator
+mv aws-iam-authenticator /usr/local/bin/aws-iam-authenticator
+aws-iam-authenticator help
+```
+- You may need to run these commands as root (use `sudo` if needed).
+- After installation, verify with `aws-iam-authenticator help`.
+
 ### Installing kubectl in the Jenkins Container
 To install the latest stable version of kubectl inside your Jenkins container or agent, run:
 
