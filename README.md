@@ -237,6 +237,30 @@ This command will remove the EKS cluster and all associated resources defined in
 - **Deploy:** Deploys the new Docker image to the EKS cluster using Kubernetes manifests. The pipeline explicitly sets the context to the correct EKS cluster before deploying.
 - **Commit Version Update:** Optionally commits the new version back to the source repository using GitHub credentials and a Personal Access Token.
 
+### How Automated Version Bumping Works
+
+The pipeline includes an **increment version** stage that automatically bumps the application version for every build. This is achieved using the Maven `build-helper` and `versions` plugins:
+
+1. **Parsing and Incrementing the Version:**
+   - The pipeline runs:
+     ```sh
+     mvn build-helper:parse-version versions:set -DnewVersion=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.nextIncrementalVersion} versions:commit
+     ```
+   - This command parses the current version in `pom.xml` and increments the patch (or minor/major, as configured) version for the new build.
+
+2. **Why Version Bumping is Important:**
+   - **Traceability:** Each build produces a unique version, making it easy to track which code changes are deployed.
+   - **Reproducibility:** Artifacts (Docker images, JARs) are tagged with the version, ensuring you can always deploy or roll back to a specific build.
+   - **Automation:** Automating version management reduces manual errors and enforces consistent versioning across builds.
+   - **CI/CD Best Practice:** Automated versioning is a standard practice in modern CI/CD pipelines for reliable artifact management.
+
+3. **Committing the Version Update:**
+   - After the version is bumped, the pipeline commits the updated `pom.xml` (and any other changed files) back to the repository using a dedicated commit and push step.
+   - This ensures the repository always reflects the latest version used in the build and deployment process.
+
+**Summary:**
+Automated version bumping and committing in the pipeline ensures every build is uniquely identifiable, traceable, and reproducible, supporting robust DevOps and release management practices.
+
 ## Kubernetes Deployment
 - The `kubernetes/deployment.yaml` manifest defines how the application is deployed in the EKS cluster, referencing the Docker image in ECR.
 - The `kubernetes/service.yaml` manifest exposes the application within the cluster.
