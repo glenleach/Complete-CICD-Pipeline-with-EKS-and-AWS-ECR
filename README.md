@@ -24,6 +24,7 @@ To successfully run this pipeline, ensure the following prerequisites are met:
     - If you do not have an EKS cluster, you can create one using the provided `eksctl-cluster.yaml` file and the [eksctl](https://eksctl.io/) CLI:
       - Run: `eksctl create cluster -f eksctl-cluster.yaml`
     - The cluster name does not need to be hardcoded in your manifests or Jenkinsfile; deployments will go to the cluster configured in your kubeconfig context.
+    - The standard kubeconfig template (`config.yaml`) is provided in this repository. **You must fill in your EKS cluster details** (certificate-authority-data, endpoint URL, and cluster name) as described in the instructions below. This file is required for Jenkins to authenticate and deploy to your EKS cluster.
 - **IAM Permissions**: Jenkins (or the machine running the pipeline) must have AWS IAM credentials with permissions for ECR (push/pull images), EKS (deploy/manage resources), and other necessary AWS services.
 - **Jenkins Credentials**: Store AWS credentials, ECR login credentials, and Git credentials securely in Jenkins (as credentials IDs referenced in the Jenkinsfile).
 - **Docker**: Docker must be installed in the Jenkins container to build and push images.
