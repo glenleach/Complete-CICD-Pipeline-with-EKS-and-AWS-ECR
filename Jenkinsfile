@@ -8,8 +8,7 @@ pipeline {
     environment {
         DOCKER_REPO_SERVER = '844181426527.dkr.ecr.eu-west-2.amazonaws.com'
         DOCKER_REPO = "${DOCKER_REPO_SERVER}/java-maven-app"
-        AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key_id')
-        AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws_secret_access_key')
+        
     }
     stages {
         stage('increment version') {
