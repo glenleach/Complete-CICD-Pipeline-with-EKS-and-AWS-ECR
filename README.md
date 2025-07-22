@@ -104,6 +104,44 @@ A full CI/CD pipeline for a Java Maven application using Jenkins, Docker, AWS EC
 
 ---
 
+## Testing the Application in EKS
+
+After deploying, verify your application is running inside the cluster:
+
+1. **Check Pod Status**
+   ```sh
+   kubectl get pods
+   ```
+   All pods should be in the `Running` or `Completed` state.
+
+2. **Check Deployment and Service**
+   ```sh
+   kubectl get deployments
+   kubectl get services
+   ```
+
+3. **Port Forward to Access the App Locally**
+   If your service is of type `ClusterIP` (default), you can port-forward to access it from your local machine:
+   ```sh
+   kubectl port-forward deployment/java-maven-app 8080:8080
+   ```
+   Then open [http://localhost:8080](http://localhost:8080) in your browser.
+
+4. **Check Logs**
+   To see the logs from your application pod:
+   ```sh
+   kubectl logs deployment/java-maven-app
+   ```
+
+5. **(Optional) Get External IP**
+   If your service is of type `LoadBalancer`, get the external IP:
+   ```sh
+   kubectl get svc
+   ```
+   Then access the app using the EXTERNAL-IP shown.
+
+---
+
 ## Manual Operations
 
 ### Update kubeconfig
