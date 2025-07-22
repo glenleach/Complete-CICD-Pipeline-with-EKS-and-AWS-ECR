@@ -29,6 +29,7 @@ To successfully run this pipeline, ensure the following prerequisites are met:
 - **Jenkins Credentials**: Store AWS credentials, ECR login credentials, and Git credentials securely in Jenkins (as credentials IDs referenced in the Jenkinsfile).
 - **Docker**: Docker must be installed in the Jenkins container to build and push images.
 - **kubectl**: The Kubernetes CLI (`kubectl`) must be installed and configured to access your EKS cluster from the Jenkins agent.
+- **envsubst**: The `envsubst` utility (part of the GNU gettext package) must be installed on the Jenkins agent. This is required for processing Kubernetes manifests with environment variables before applying them with `kubectl`. Install with `apt-get install -y gettext` (Debian/Ubuntu) or `apk add --no-cache gettext` (Alpine).
 - **AWS CLI**: The AWS CLI must be installed and configured on the Jenkins agent.
 
 ### Installing and Configuring AWS CLI in the Jenkins Container
